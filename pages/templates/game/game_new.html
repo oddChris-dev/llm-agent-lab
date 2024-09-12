@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>New Game</h1>
+    {{ render_form(game_form, action=url_for('game_page.new_game'), method='post') }}
+
+{% endblock %}

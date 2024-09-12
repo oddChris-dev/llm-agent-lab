@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS transcripts;
+
+CREATE TABLE transcripts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    agent VARCHAR(255) NOT NULL,
+    url VARCHAR(512) NOT NULL,
+    content TEXT NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+);

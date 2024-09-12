@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {{ render_form(done_form, action=url_for('session_page.view_session', session_id=session.id), method='get') }}
+
+    <h1>Transcripts for Session: {{ session.name }}</h1>
+    <table>
+        {% for transcript in transcripts %}
+        <tr>
+            <td>
+                {{ render_form(play_form, action=url_for('session_transcripts_page.play_transcript', transcript_id=transcript.id), method='post') }}
+            </td>
+            <td>
+                {{ render_form(delete_form, action=url_for('session_transcripts_page.delete_transcript', session_id=session.id, transcript_id=transcript.id), method='post') }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Agent
+            </td>
+            <td>
+                {{ transcript.agent }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Url
+            </td>
+            <td>
+                {{ transcript.url }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Content
+            </td>
+            <td>
+                {{ transcript.content }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Create Session</h1>
+
+    {{ render_form(session_form, action=url_for('session_page.new_session'), method='post') }}
+
+{% endblock %}

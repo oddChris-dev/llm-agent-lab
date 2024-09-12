@@ -1,0 +1,100 @@
+<!doctype html>
+
+{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+
+<html lang="en">
+    <head>
+
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block styles %}
+            <link href="{{ url_for('static', filename='slate.css') }}" rel="stylesheet">
+            <link href="{{ url_for('static', filename='custom.css') }}" rel="stylesheet">
+
+        {% endblock %}
+
+        <title>AI Game Studio</title>
+        {% endblock %}
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="navbar-nav mr-auto">
+            {{ render_nav_item('index_page.index', 'Home') }}
+            {{ render_nav_item('session_page.sessions', 'Sessions') }}
+            {{ render_nav_item('game_page.games', 'Games') }}
+            {{ render_nav_item('agent_page.agents', 'Agents') }}
+            {{ render_nav_item('voice_page.voices', 'Voices') }}
+        </div>
+    </nav>
+
+    {{ render_messages() }}
+
+
+    <!-- Your page content -->
+    {% block content %}{% endblock %}
+
+
+    <!-- Delete confirmation dialog -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/bootstrap.bundle.min.js"></script>
+    <!-- Delete confirmation dialog script -->
+    <script>
+    let formToSubmit = null;  // Variable to hold the form to submit
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attach click event listener to all delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                formToSubmit = this.closest('form');
+                if (formToSubmit) {
+                    var confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                    confirmDeleteModal.show();
+                } else {
+                    console.error("form not found");
+                }
+            });
+        });
+
+        // When the user confirms the deletion in the modal
+        document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+            if (formToSubmit && typeof formToSubmit.submit === 'function') {
+                formToSubmit.submit();  // Submit the form once the user confirms
+            } else {
+                console.error("No form to submit or submit is not a function!");
+                console.log('Type of formToSubmit.submit:', typeof formToSubmit.submit);
+                console.log('formToSubmit:', formToSubmit);
+            }
+        });
+    });
+    </script>
+
+    {% block scripts %}
+        <!-- Optional JavaScript -->
+    {% endblock %}
+
+    </body>
+</html>

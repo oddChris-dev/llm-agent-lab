@@ -1,0 +1,119 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Session {{ session.name }}</h1>
+    <table>
+        <tr>
+        <td>
+            {{ render_form(start_form, action=url_for('session_page.start_session', session_id=session.id), method='post', render_kw={'style':'display:inline;'}) }}
+        </td>
+        </tr>
+        <tr>
+        <td>Game</td>
+        <td>
+            <a class="btn btn-primary" role="button" href="{{ url_for('game_page.edit_game', game_name=session.game) }}">{{session.game}}</a>
+        </td>
+        </tr>
+        <tr>
+            <td>Judge</td>
+            <td>
+                <a class="btn btn-primary" role="button" href="{{ url_for('agent_page.edit_agent', agent_name=session.judge) }}">{{session.judge}}</a>
+            </td>
+        </tr>
+            <td>Summarizer</td>
+            <td>
+                <a class="btn btn-primary" role="button" href="{{ url_for('agent_page.edit_agent', agent_name=session.summary) }}">{{session.summary}}</a>
+            </td>
+        </tr>
+        <tr>
+        <td>
+            {{ render_form(edit_form, action=url_for('session_page.edit_session', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+        </td>
+        </tr>
+        <tr>
+        <td>
+            {{ render_form(player_form, action=url_for('session_players_page.session_players', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+        </td>
+            <td>
+            {% for player in players %}
+                <a class="btn btn-primary" role="button" href="{{ url_for('agent_page.edit_agent', agent_name=player.player) }}">{{player.player}}</a><br>
+
+            {% endfor %}
+        </td>
+            </tr>
+        <tr><td>
+            {{ render_form(settings_form, action=url_for('session_settings_page.session_settings', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+        </td>
+        <td>
+            {% for setting in settings %}
+            {{ setting.name }}: {{setting.value}}<br>
+            {% endfor %}
+        </td>
+        </tr>
+        <tr>
+        <td>
+            {{ render_form(transcript_form, action=url_for('session_transcripts_page.session_transcripts', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+        </td>
+            <td>
+                <a class="btn btn-success btn-sm" role="button" href="{{ url_for('session_transcripts_page.start_session_transcripts', session_id=session.id) }}">Play</a>
+            </td>
+            </tr><tr>
+        <td>
+            {{ render_form(history_form, action=url_for('session_history_page.session_history', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+        </td>
+            </tr><tr>
+        <td>
+            {{ render_form(delete_form, action=url_for('session_page.delete_session', session_id=session.id), method='post', render_kw={'style':'display:inline;'}) }}
+        </td>
+        </tr>
+
+
+        <tr>
+            <td colspan="2">
+                <h2>Prompt Replacements</h2>
+                Place these in the agent prompt to insert query results
+            </td>
+
+        </tr>
+
+        <tr>
+            <td>%CURRENT_USER_PAGE%</td>
+            <td><pre>{{ prompt_replacements.current_user_page }}</pre></td>
+        </tr>
+        <tr>
+            <td>%CURRENT_PAGE%</td>
+            <td><pre>{{ prompt_replacements.current_page }}</pre></td>
+        </tr>
+
+        <tr>
+            <td>%PAGES%</td>
+            <td><pre>{{ prompt_replacements.pages }}</pre></td>
+        </tr>
+
+        <tr>
+            <td>%SEARCHES%</td>
+            <td><pre>{{ prompt_replacements.searches }}</pre></td>
+        </tr>
+
+        <tr>
+            <td>%SETTINGS%</td>
+            <td><pre>{{ prompt_replacements.settings }}</pre></td>
+        </tr>
+
+        <tr>
+            <td>%LINKS%</td>
+            <td><pre>{{ prompt_replacements.links }}</pre></td>
+        </tr>
+
+        <tr>
+            <td>%AGENTS%</td>
+            <td><pre>{{ prompt_replacements.agents }}</pre></td>
+        </tr>
+
+
+    </table>
+
+
+{% endblock %}

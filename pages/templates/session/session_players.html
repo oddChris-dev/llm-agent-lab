@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {{ render_form(done_form, action=url_for('session_page.view_session', session_id=session.id), method='get') }}
+
+    <h1>Edit Session Players</h1>
+
+    {{ render_form(add_player_form, action=url_for('session_players_page.new_player', session_id=session.id), method='post') }}
+
+    {% if player_form %}
+        {{ render_form(player_form, action=url_for('session_players_page.session_players', session_id=session.id), method='post') }}
+    {% endif %}
+
+{% endblock %}

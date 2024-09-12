@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {{ render_form(done_form, action=url_for('session_page.view_session', session_id=session.id), method='get') }}
+
+    <h1>Edit Session</h1>
+
+    {{ render_form(session_form, action=url_for('session_page.edit_session', session_id=session.id), method='post') }}
+
+{% endblock %}

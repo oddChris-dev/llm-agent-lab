@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Agent {{ agent.name }}</h1>
+
+    {{ render_form(edit_form, action=url_for('agent_page.edit_agent', agent_name=agent.name), method='get', render_kw={'style':'display:inline;'}) }}
+
+    {% if response %}
+        <h2>Response </h2>
+        <p>{{ response }}</p>
+    {% endif %}
+
+    {{ render_form(test_agent_form, action=url_for('agent_page.test_agent', agent_name=agent.name), method='post') }}
+
+
+{% endblock %}

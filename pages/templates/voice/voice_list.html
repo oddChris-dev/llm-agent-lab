@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Add Voice</h2>
+    {{ render_form(voice_form, action=url_for('voice_page.add_voice'), method='post') }}
+
+    <hr>
+    <table>
+
+        {% for voice in voices %}
+        <tr>
+            <td>
+            {{ voice.name }}
+            </td>
+            <td>
+            <!-- Test Form -->
+            <form action="{{ url_for('voice_page.say') }}" method="post" style="display:inline;">
+                {{ test_form.hidden_tag() }}
+                <input type="hidden" name="voice" value="{{voice.name}}">
+                <input type="hidden" name="prompt" value="this is a test of voice {{voice.name}}">
+                {{ test_form.test_button() }}
+            </form>
+            </td>
+            <td>
+             <!-- Delete Form -->
+            {{ render_form(delete_form, id="deleteForm-%d" % loop.index, action=url_for('voice_page.delete_voice', name=voice.name), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+
+{% endblock %}

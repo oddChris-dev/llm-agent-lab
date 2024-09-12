@@ -1,0 +1,18 @@
+{
+    "default_voice": "default",
+    "playlist_path": "D:\\stream_playlist",
+    "ai_model_path": "D:\\models\\Meta-Llama-3.1-8B-Instruct-abliterated",
+    "speech_to_text_model_path": "D:\\models\\vosk-model-en-us-0.22",
+    "text_to_speech_model_path": "D:\\models\\XTTS-v2",
+    "audio_temp_path": "D:\\stream_audio_tmp",
+    "vlc_player_path": "C:\\Program Files\\VideoLAN\\VLC",
+    "auto_play_media": false,
+    "listen_for_input": false,
+    "mysql": {
+        "host": "localhost",
+        "port": 3306,
+        "database": "llm-agent-lab",
+        "user": "root",
+        "password": "mysql"
+    }
+}

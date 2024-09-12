@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Edit Game {{game.name}}</h1>
+
+    {{ render_form(game_form, action=url_for('game_page.edit_game', game_name=game.name), method='post') }}
+
+{% endblock %}

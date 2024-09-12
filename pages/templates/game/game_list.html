@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td>
+                <h1>Games</h1>
+            </td>
+            <td>
+                {{ render_form(new_form, action=url_for('game_page.new_game'), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+        <tr>
+            <td colspan="4">
+        </td></tr>
+        {% for game in games %}
+        <tr>
+            <td>{{ game.name }}</td>
+
+            <td>
+                <!-- Edit Form -->
+                {{ render_form(edit_form, action=url_for('game_page.edit_game', game_name=game.name), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+
+            <td>
+             <!-- Delete Form -->
+                {{ render_form(delete_form, id="deleteForm-%d" % loop.index, action=url_for('game_page.delete_game', game_name=game.name), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Music Player</h1>
+    <table>
+        <tr>
+            {% if music_player.playing %}
+                <td>
+                    {{ render_form(music_prev_form, action=url_for('media_page.previous_song'), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+                <td>
+                    {{ render_form(music_next_form, action=url_for('media_page.skip_song'), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+                <td>
+                    {{ render_form(music_stop_form, action=url_for('media_page.media_stop'), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+            {% else %}
+                <td>
+                    {{ render_form(music_start_form, action=url_for('media_page.media_start'), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+
+    <h1>Transcript Player</h1>
+    <table><tr>
+        {% if transcript_player.running %}
+            <td>
+                {{ render_form(skip_transcript_form, action=url_for('session_transcripts_page.skip_transcript'), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+            <td>
+                {{ render_form(clear_transcripts_form, action=url_for('session_transcripts_page.clear_transcripts'), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+            <td>
+                {{ render_form(stop_transcript_form, action=url_for('session_transcripts_page.stop_transcripts'), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+        {% else %}
+            <td>
+                {{ render_form(start_transcripts_form, action=url_for('session_transcripts_page.start_transcripts'), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+        {% endif %}
+    </tr></table>
+
+    {% if game_system.current_game %}
+        <h1>Current Session: {{ game_system.current_game.session.name }}</h1>
+        {{ render_form(stop_session_form, action=url_for('index_page.stop_all'), method='get', render_kw={'style':'display:inline;'}) }}
+        {{ render_form(browser_form, action=url_for('index_page.start_browser'), method='post', render_kw={'style':'display:inline;'}) }}
+        {{ render_form(listener_form, action=url_for('index_page.start_listener'), method='post', render_kw={'style':'display:inline;'}) }}
+        {{ render_form(input_form, action=url_for('index_page.user_input'), method='post', render_kw={'style':'display:inline;'}) }}
+    {% else %}
+        <h1>Start a session</h1>
+        <table>
+        {% for session in sessions %}
+        <tr>
+            <td>
+                {{ session.name }}
+            </td>
+            <td>
+                {{ render_form(start_session_form, action=url_for('session_page.start_session', session_id=session.id), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        {{ render_form(session_form, action=url_for('session_page.sessions'), method='get', render_kw={'style':'display:inline;'}) }}
+    {% endif %}
+
+{% endblock %}

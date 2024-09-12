@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <table>
+        <tr>
+            <td>
+                <h1>Sessions</h1>
+            </td>
+            <td>
+                {{ render_form(new_form, action=url_for('session_page.new_session'), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+        </tr>
+        {% for session in sessions %}
+        <tr>
+            <td>
+                {{ session.name }}
+            </td>
+            <td>
+                {{ render_form(start_form, action=url_for('session_page.start_session', session_id=session.id), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+            <td>
+                {{ render_form(detail_form, action=url_for('session_page.view_session', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+            <td>
+                {{ render_form(transcript_form, action=url_for('session_transcripts_page.session_transcripts', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+            <td>
+                {{ render_form(history_form, action=url_for('session_history_page.session_history', session_id=session.id), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

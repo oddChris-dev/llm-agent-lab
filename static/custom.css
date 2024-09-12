@@ -1,0 +1,119 @@
+/* General Page Styles */
+body {
+    background-color: #2c2c2c; /* Dark background for a modern look */
+    color: #ffffff; /* White text for contrast */
+    padding: 20px; /* Adds padding around the entire page */
+}
+
+/* Navbar Customization */
+.navbar {
+    background-color: #1c1c1c; /* Darker navbar background */
+    border-bottom: 2px solid #3c3c3c; /* Subtle border for separation */
+    padding: 10px; /* Adds some padding around the navbar items */
+}
+
+
+/* Header Styling */
+h2 {
+    color: #ffffff;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #6a0dad; /* Adds a purple underline effect */
+    margin: 20px; /* Spacing below the header */
+}
+
+/* Form Styles */
+form {
+    margin: 20px;
+    padding: 20px
+    border-radius: 5px;
+    margin-bottom: 20px; /* Adds spacing below the form */
+}
+
+.form-label {
+    color: #b0b0b0; /* Lighter gray for form labels */
+    font-weight: bold;
+}
+
+.input-group,
+.form-control {
+    background-color: #3a3a3a; /* Darker background for input fields */
+    color: #ffffff; /* White text color for inputs */
+    border: 1px solid #555555; /* Border for inputs */
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #6a0dad; /* Custom purple button color */
+    border-color: #6a0dad;
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.btn {
+    padding: 5px 75px 5px 75px;
+}
+
+table tr td { padding-bottom: 5px; }
+
+.btn-primary:hover {
+    background-color: #5b0ba6; /* Darker purple on hover */
+}
+
+.btn-danger {
+    background-color: #e74c3c; /* Red for danger actions */
+    border-color: #e74c3c;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* List Group Customization */
+.list-group-item {
+    background-color: #2f2f2f; /* Darker background for list items */
+    color: #ffffff;
+    border: none; /* Removes borders between items */
+    padding: 15px; /* Adds padding for spacing */
+    margin-bottom: 5px; /* Adds space between items */
+    transition: background-color 0.3s ease; /* Smooth background change on hover */
+    display: flex; /* Use flexbox for button alignment */
+    align-items: center; /* Center-aligns items vertically */
+    justify-content: space-between; /* Ensures proper spacing between content and buttons */
+}
+
+/* Voice Test/Delete Button Group */
+.voice-action-buttons {
+    display: flex; /* Flexbox for inline button group */
+    gap: 10px; /* Space between buttons */
+    flex-wrap: wrap; /* Allows buttons to wrap if they are too wide */
+    align-items: center; /* Align buttons vertically */
+    justify-content: flex-end; /* Align buttons to the right end */
+}
+
+/* Table and List Responsive Design */
+.table {
+    width: 100%; /* Ensures table width is 100% */
+    overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
+}
+
+.table td, .table th {
+    padding-bottom: 20px;
+    white-space: nowrap; /* Prevents text from wrapping in cells */
+}
+
+/* Custom Footer */
+footer {
+    background-color: #1c1c1c; /* Darker footer background */
+    color: #ffffff;
+    text-align: center;
+    padding: 10px;
+    position: fixed; /* Sticks the footer to the bottom */
+    bottom: 0;
+    width: 100%;
+    border-top: 2px solid #3c3c3c; /* Adds a top border for separation */
+}
+
+/* Smooth Scroll for Anchor Links */
+html {
+    scroll-behavior: smooth;
+}

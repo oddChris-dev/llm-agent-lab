@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="910fd3b1-50e8-4abd-9405-ea1f6a7e3f6d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/llm-agent-lab.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/default.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/doc/example.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/agent_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/game_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/page_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/session_history_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/session_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/session_player_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/session_setting_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/session_transcript_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/agents.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/games.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/pages.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/session_history.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/session_players.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/session_settings.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/session_transcripts.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/sessions.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/sql/voices.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/voice_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/agent_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/base_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/game_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/index_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/media_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/session_history_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/session_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/session_players_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/session_settings_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/session_transcripts_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/agent/agent_edit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/agent/agent_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/agent/agent_new.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/agent/agent_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/game/game_edit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/game/game_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/game/game_new.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_edit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_history.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_new.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_players.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_settings.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_transcripts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/session/session_view.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/templates/voice/voice_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/voice_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/bootstrap.bundle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/custom.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/slate.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/browser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/browser_proxy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/game_moves.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/game_system.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/media_player.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/speach_listener.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/system_base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/text_generator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/text_to_speach.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/systems/transcript_player.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_html_tools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_text_tools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/date_tools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/html_tools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/text_tools.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="2lwpvrG0XqcUEe7dywbHutsBiHD" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/llm-agent-lab/llm-agent-lab",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\llm-agent-lab\llm-agent-lab" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\llm-agent-lab\llm-agent-lab" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="llm-agent-lab" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="910fd3b1-50e8-4abd-9405-ea1f6a7e3f6d" name="Changes" comment="" />
+      <created>1726101226466</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1726101226466</updated>
+    </task>
+    <servers />
+  </component>
+</project>

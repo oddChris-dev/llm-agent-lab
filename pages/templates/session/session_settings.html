@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {{ render_form(done_form, action=url_for('session_page.view_session', session_id=session.id), method='get') }}
+
+    <h1>Settings for Session: {{ session.name }}</h1>
+
+    <!-- Add new setting form -->
+    {{ render_form(add_form, action=url_for('session_settings_page.session_settings', session_id=session.id), method='post') }}
+
+    <table>
+        <!-- List of current settings -->
+        {% for setting in settings %}
+            <tr>
+                <td>{{ setting.name }}</td>
+
+                <td>
+                    <!-- Edit Form -->
+                    {{ edit_form.set_setting(setting) }}
+                    {{ render_form(edit_form, action=url_for('session_settings_page.edit_setting', session_id=session.id, setting_name=setting.name), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+
+                <td>
+                 <!-- Delete Form -->
+                    {{ render_form(delete_form, id="deleteForm-%d" % loop.index, action=url_for('session_settings_page.delete_setting', session_id=session.id, setting_name=setting.name), method='post', render_kw={'style':'display:inline;'}) }}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

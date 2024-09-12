@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td>
+                <h1>Agents</h1>
+            </td>
+            <td>
+                {{ render_form(new_form, action=url_for('agent_page.new_agent'), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+        <tr>
+            <td colspan="4">
+        </td></tr>
+        {% for agent in agents %}
+        <tr>
+            <td>{{ agent.name }}</td>
+            <td>
+                <!-- Test Form -->
+                {{ render_form(test_form, action=url_for('agent_page.test_agent', agent_name=agent.name), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+
+            <td>
+                <!-- Edit Form -->
+                {{ render_form(edit_form, action=url_for('agent_page.edit_agent', agent_name=agent.name), method='get', render_kw={'style':'display:inline;'}) }}
+            </td>
+
+            <td>
+             <!-- Delete Form -->
+                {{ render_form(delete_form, id="deleteForm-%d" % loop.index, action=url_for('agent_page.delete_agent', agent_name=agent.name), method='post', render_kw={'style':'display:inline;'}) }}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

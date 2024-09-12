@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ render_form(done_form, action=url_for('session_page.view_session', session_id=session.id), method='get') }}
+
+    <h1>Session History</h1>
+
+    <div class="pagination">
+        <!-- Previous 5 Pages Button -->
+        {% if page > 5 %}
+            <a class="btn btn-primary" role="button" href="{{ url_for('session_history_page.session_history', session_id=session.id, page=prev_page) }}">« Prev</a>
+        {% endif %}
+
+        <!-- Page Buttons -->
+        {% for p in range(start_page, end_page + 1) %}
+            {% if p == page %}
+                <a class="btn btn-info" role="button" href="#">{{ p }}</a>
+            {% else %}
+                <a class="btn btn-primary" role="button" href="{{ url_for('session_history_page.session_history', session_id=session.id, page=p) }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next 5 Pages Button -->
+        {% if page + 2 < total_pages %}
+            <a class="btn btn-primary" role="button" href="{{ url_for('session_history_page.session_history', session_id=session.id, page=next_page) }}">Next »</a>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Actions</th>
+                <th>Timestamp</th>
+                <th>Role</th>
+                <th>Content</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history %}
+                <tr>
+                    <td>
+                        {{ render_form(delete_form, action=url_for('session_history_page.delete_history', session_id=session.id, history_id=entry.id), method='post') }}
+                    </td>
+                    <td>{{ entry.timestamp }}</td>
+                    <td>{{ entry.role }}</td>
+                    <td>{{ entry.content }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

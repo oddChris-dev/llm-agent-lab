@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Create Agent</h1>
+    {{ render_form(agent_form, action=url_for('agent_page.new_agent'), method='post') }}
+
+{% endblock %}
