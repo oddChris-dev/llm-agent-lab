@@ -51,7 +51,7 @@ Start the session and interact by typing, speaking or browsing websites
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/llm-agent-lab.git
+   git clone https://github.com/oddChris-dev/llm-agent-lab.git
    cd llm-agent-lab
 
 2. Install dependencies:
