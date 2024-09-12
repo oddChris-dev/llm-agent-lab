@@ -84,8 +84,6 @@ class TextToSpeach(SystemBase):
         text = re.sub(r' ,', ',', text)
         text = re.sub(r',$', '', text)
         text = TextTools.separate_acronyms(text)
-        text = re.sub("ampie", "am pie", text, flags=re.I)
-        text = re.sub("step", "", text, flags=re.I)
         return text
 
     def generate_speech(self, prompt: str, output_file: str = "tmp/tts_output.wav"):
