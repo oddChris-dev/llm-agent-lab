@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 
 from apps.workflows.models import Workflow, Node, Connection, WorkflowStatus
 from apps.providers.models import Provider, ProviderType
+from apps.queues.models import Queue, QueueItem, QueueStrategy
 
 
 @pytest.fixture
@@ -102,3 +103,22 @@ def sample_node_data():
             'temperature': 0.7
         }
     }
+
+
+@pytest.fixture
+def queue(user):
+    """Create and return a test queue."""
+    return Queue.objects.create(
+        name='Test Queue',
+        user=user,
+        strategy=QueueStrategy.FIFO
+    )
+
+
+@pytest.fixture
+def queue_with_items(queue):
+    """Create a queue with some items."""
+    QueueItem.objects.create(queue=queue, data={'n': 1})
+    QueueItem.objects.create(queue=queue, data={'n': 2})
+    QueueItem.objects.create(queue=queue, data={'n': 3})
+    return queue
