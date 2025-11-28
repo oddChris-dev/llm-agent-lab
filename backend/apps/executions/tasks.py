@@ -272,6 +272,7 @@ def _initialize_providers(settings: Dict[str, Any]) -> Dict[str, Any]:
 
 def _register_node_executors(executor):
     """Register all node executors with the workflow executor."""
+    # Core node executors
     from apps.executions.engine.executor import (
         LLMNodeExecutor,
         TTSNodeExecutor,
@@ -283,6 +284,35 @@ def _register_node_executors(executor):
     executor.register_executor(TTSNodeExecutor())
     executor.register_executor(WebSearchNodeExecutor())
     executor.register_executor(WebFetchNodeExecutor())
+
+    # Additional node executors
+    from apps.executions.engine.node_executors import (
+        ConditionalNodeExecutor,
+        DelayNodeExecutor,
+        LoopNodeExecutor,
+        VariableNodeExecutor,
+        TransformNodeExecutor,
+        MergeNodeExecutor,
+        QueuePushNodeExecutor,
+        QueuePopNodeExecutor,
+        HTTPRequestNodeExecutor,
+        TextProcessNodeExecutor,
+        OutputNodeExecutor,
+        LogNodeExecutor,
+    )
+
+    executor.register_executor(ConditionalNodeExecutor())
+    executor.register_executor(DelayNodeExecutor())
+    executor.register_executor(LoopNodeExecutor())
+    executor.register_executor(VariableNodeExecutor())
+    executor.register_executor(TransformNodeExecutor())
+    executor.register_executor(MergeNodeExecutor())
+    executor.register_executor(QueuePushNodeExecutor())
+    executor.register_executor(QueuePopNodeExecutor())
+    executor.register_executor(HTTPRequestNodeExecutor())
+    executor.register_executor(TextProcessNodeExecutor())
+    executor.register_executor(OutputNodeExecutor())
+    executor.register_executor(LogNodeExecutor())
 
 
 def _on_node_start(execution_id: str, node_id: str):
