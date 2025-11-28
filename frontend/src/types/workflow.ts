@@ -65,6 +65,22 @@ export interface CreateWorkflowInput {
   settings?: Record<string, unknown>;
 }
 
+export interface NodeInput {
+  id: string;
+  type: string;
+  name: string;
+  position: Position;
+  config: Record<string, unknown>;
+}
+
+export interface ConnectionInput {
+  id: string;
+  source_node_id: string;
+  source_port: string;
+  target_node_id: string;
+  target_port: string;
+}
+
 export interface UpdateWorkflowInput {
   name?: string;
   description?: string;
@@ -73,4 +89,6 @@ export interface UpdateWorkflowInput {
   status?: WorkflowStatus;
   canvas_data?: Record<string, unknown>;
   settings?: Record<string, unknown>;
+  nodes?: NodeInput[];
+  connections?: ConnectionInput[];
 }

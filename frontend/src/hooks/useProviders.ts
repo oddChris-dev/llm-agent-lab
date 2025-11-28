@@ -8,6 +8,8 @@ import providersApi, {
   CreateProviderData,
   UpdateProviderData,
   TestResult,
+  Voice,
+  CloneVoiceData,
 } from '../api/providers';
 
 const PROVIDERS_KEY = 'providers';
@@ -94,5 +96,46 @@ export function useProviderModels(id: string | null) {
     queryKey: [PROVIDERS_KEY, id, 'models'],
     queryFn: () => providersApi.getProviderModels(id!),
     enabled: !!id,
+  });
+}
+
+/**
+ * Hook to get available voices for a TTS provider.
+ */
+export function useProviderVoices(id: string | null) {
+  return useQuery({
+    queryKey: [PROVIDERS_KEY, id, 'voices'],
+    queryFn: () => providersApi.getVoices(id!),
+    enabled: !!id,
+  });
+}
+
+/**
+ * Hook to clone a voice from an audio sample.
+ */
+export function useCloneVoice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ providerId, data }: { providerId: string; data: CloneVoiceData }) =>
+      providersApi.cloneVoice(providerId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [PROVIDERS_KEY, variables.providerId, 'voices'] });
+    },
+  });
+}
+
+/**
+ * Hook to delete a cloned voice.
+ */
+export function useDeleteVoice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ providerId, voiceId }: { providerId: string; voiceId: string }) =>
+      providersApi.deleteVoice(providerId, voiceId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [PROVIDERS_KEY, variables.providerId, 'voices'] });
+    },
   });
 }

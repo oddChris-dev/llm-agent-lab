@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Node } from 'reactflow';
-import { X, Save } from 'lucide-react';
+import { X, Save, Loader2 } from 'lucide-react';
+import { useProviders, useProviderVoices } from '../../hooks/useProviders';
 
 interface NodeConfigPanelProps {
   node: Node;
@@ -16,6 +17,36 @@ export default function NodeConfigPanel({
   const [label, setLabel] = useState(node.data.label);
   const [config, setConfig] = useState(JSON.stringify(node.data.config || {}, null, 2));
   const [configError, setConfigError] = useState<string | null>(null);
+
+  // For voice nodes: provider and voice selection
+  const [selectedProviderId, setSelectedProviderId] = useState<string>(
+    node.data.config?.provider_id || ''
+  );
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>(
+    node.data.config?.voice_id || ''
+  );
+
+  // Fetch TTS providers
+  const { data: providers } = useProviders('tts');
+  const ttsProviders = providers || [];
+
+  // Fetch voices for selected provider
+  const { data: voices, isLoading: voicesLoading } = useProviderVoices(
+    selectedProviderId || null
+  );
+
+  // Update config when provider or voice changes
+  useEffect(() => {
+    if (node.data.type?.startsWith('voice.')) {
+      const currentConfig = JSON.parse(config);
+      const newConfig = {
+        ...currentConfig,
+        provider_id: selectedProviderId || undefined,
+        voice_id: selectedVoiceId || undefined,
+      };
+      setConfig(JSON.stringify(newConfig, null, 2));
+    }
+  }, [selectedProviderId, selectedVoiceId]);
 
   const handleSave = () => {
     try {
@@ -101,16 +132,61 @@ export default function NodeConfigPanel({
         )}
 
         {category === 'voice' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Voice
-            </label>
-            <select className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <option value="">Select voice...</option>
-              <option value="default">Default</option>
-              <option value="custom">Custom Voice</option>
-            </select>
-          </div>
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                TTS Provider
+              </label>
+              <select
+                value={selectedProviderId}
+                onChange={(e) => {
+                  setSelectedProviderId(e.target.value);
+                  setSelectedVoiceId(''); // Reset voice when provider changes
+                }}
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">Select provider...</option>
+                {ttsProviders.map((provider) => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.name}
+                  </option>
+                ))}
+              </select>
+              {ttsProviders.length === 0 && (
+                <p className="text-xs text-amber-500 mt-1">
+                  No TTS providers configured. Add one in Settings.
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Voice
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedVoiceId}
+                  onChange={(e) => setSelectedVoiceId(e.target.value)}
+                  disabled={!selectedProviderId || voicesLoading}
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
+                >
+                  <option value="">Select voice...</option>
+                  {voices?.map((voice) => (
+                    <option key={voice.id} value={voice.id}>
+                      {voice.name} {voice.is_cloned && '(cloned)'}
+                    </option>
+                  ))}
+                </select>
+                {voicesLoading && (
+                  <Loader2 className="absolute right-8 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-gray-400" />
+                )}
+              </div>
+              {selectedProviderId && voices?.length === 0 && !voicesLoading && (
+                <p className="text-xs text-amber-500 mt-1">
+                  No voices available. Upload a voice sample in Assets.
+                </p>
+              )}
+            </div>
+          </>
         )}
 
         {category === 'queue' && (

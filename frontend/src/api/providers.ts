@@ -39,6 +39,20 @@ export interface TestResult {
   models: string[];
 }
 
+export interface Voice {
+  id: string;
+  name: string;
+  language: string;
+  description: string | null;
+  is_cloned: boolean;
+}
+
+export interface CloneVoiceData {
+  name: string;
+  audio: File;
+  description?: string;
+}
+
 const providersApi = {
   /**
    * List all providers, optionally filtered by type.
@@ -94,6 +108,38 @@ const providersApi = {
   async getProviderModels(id: string): Promise<string[]> {
     const response = await apiClient.get(`/providers/${id}/models/`);
     return response.data.models;
+  },
+
+  /**
+   * Get available voices for a TTS provider.
+   */
+  async getVoices(id: string): Promise<Voice[]> {
+    const response = await apiClient.get(`/providers/${id}/voices/`);
+    return response.data.voices;
+  },
+
+  /**
+   * Clone a voice from an audio sample.
+   */
+  async cloneVoice(id: string, data: CloneVoiceData): Promise<Voice> {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('audio', data.audio);
+    if (data.description) formData.append('description', data.description);
+
+    const response = await apiClient.post(`/providers/${id}/clone_voice/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  /**
+   * Delete a cloned voice.
+   */
+  async deleteVoice(providerId: string, voiceId: string): Promise<void> {
+    await apiClient.delete(`/providers/${providerId}/voices/${voiceId}/`);
   },
 };
 

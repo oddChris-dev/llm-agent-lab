@@ -166,13 +166,106 @@ class WorkflowCreateSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class NodeInputSerializer(serializers.Serializer):
+    """
+    Serializer for node input data when updating workflows.
+    """
+    id = serializers.CharField()
+    type = serializers.CharField()
+    name = serializers.CharField()
+    position = serializers.DictField()
+    config = serializers.DictField(required=False, default=dict)
+
+
+class ConnectionInputSerializer(serializers.Serializer):
+    """
+    Serializer for connection input data when updating workflows.
+    """
+    id = serializers.CharField()
+    source_node_id = serializers.CharField()
+    source_port = serializers.CharField()
+    target_node_id = serializers.CharField()
+    target_port = serializers.CharField()
+
+
 class WorkflowUpdateSerializer(serializers.ModelSerializer):
     """
-    Serializer for updating workflows.
+    Serializer for updating workflows with nodes and connections.
     """
+    nodes = NodeInputSerializer(many=True, required=False, write_only=True)
+    connections = ConnectionInputSerializer(many=True, required=False, write_only=True)
+
     class Meta:
         model = Workflow
-        fields = ['name', 'description', 'icon', 'color', 'status', 'canvas_data', 'settings']
+        fields = ['name', 'description', 'icon', 'color', 'status', 'canvas_data', 'settings', 'nodes', 'connections']
+
+    def update(self, instance, validated_data):
+        nodes_data = validated_data.pop('nodes', None)
+        connections_data = validated_data.pop('connections', None)
+
+        # Update basic workflow fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Update nodes if provided
+        if nodes_data is not None:
+            # Get existing node IDs
+            existing_node_ids = set(instance.nodes.values_list('id', flat=True))
+            new_node_ids = set()
+
+            for node_data in nodes_data:
+                node_id = node_data['id']
+                position = node_data.get('position', {})
+
+                # Try to find existing node or create new one
+                try:
+                    from uuid import UUID
+                    node = instance.nodes.get(id=UUID(node_id))
+                    # Update existing node
+                    node.type = node_data['type']
+                    node.name = node_data['name']
+                    node.position_x = position.get('x', 0)
+                    node.position_y = position.get('y', 0)
+                    node.config = node_data.get('config', {})
+                    node.save()
+                    new_node_ids.add(node.id)
+                except (Node.DoesNotExist, ValueError):
+                    # Create new node with new UUID
+                    node = Node.objects.create(
+                        workflow=instance,
+                        type=node_data['type'],
+                        name=node_data['name'],
+                        position_x=position.get('x', 0),
+                        position_y=position.get('y', 0),
+                        config=node_data.get('config', {})
+                    )
+                    new_node_ids.add(node.id)
+
+            # Delete nodes that are no longer in the list
+            nodes_to_delete = existing_node_ids - new_node_ids
+            if nodes_to_delete:
+                instance.nodes.filter(id__in=nodes_to_delete).delete()
+
+        # Update connections if provided
+        if connections_data is not None:
+            # Delete all existing connections and recreate
+            instance.connections.all().delete()
+
+            for conn_data in connections_data:
+                Connection.objects.create(
+                    workflow=instance,
+                    source_node_id=conn_data['source_node_id'],
+                    source_port=conn_data['source_port'],
+                    target_node_id=conn_data['target_node_id'],
+                    target_port=conn_data['target_port']
+                )
+
+        # Increment version
+        instance.version += 1
+        instance.save()
+
+        return instance
 
 
 class WorkflowDuplicateSerializer(serializers.Serializer):

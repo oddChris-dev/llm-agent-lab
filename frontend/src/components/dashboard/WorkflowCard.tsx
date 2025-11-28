@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Play, Pause, Settings, MoreVertical, Clock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Play, Pause, Settings, MoreVertical, Clock, Loader2 } from 'lucide-react';
 import type { Workflow } from '../../types/workflow';
+import { useUpdateWorkflow, useDeleteWorkflow, useDuplicateWorkflow, useExecuteWorkflow } from '../../hooks/useWorkflows';
 
 interface WorkflowCardProps {
   workflow: Workflow;
@@ -20,7 +21,12 @@ const statusIcons = {
 };
 
 export default function WorkflowCard({ workflow }: WorkflowCardProps) {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const updateWorkflow = useUpdateWorkflow();
+  const deleteWorkflow = useDeleteWorkflow();
+  const duplicateWorkflow = useDuplicateWorkflow();
+  const executeWorkflow = useExecuteWorkflow();
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -30,6 +36,40 @@ export default function WorkflowCard({ workflow }: WorkflowCardProps) {
       minute: '2-digit',
     });
   };
+
+  const handleToggleStatus = () => {
+    const newStatus = workflow.status === 'active' ? 'draft' : 'active';
+    updateWorkflow.mutate({
+      id: workflow.id,
+      data: { status: newStatus },
+    });
+  };
+
+  const handleDuplicate = () => {
+    setMenuOpen(false);
+    duplicateWorkflow.mutate({ id: workflow.id });
+  };
+
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete "${workflow.name}"?`)) {
+      setMenuOpen(false);
+      deleteWorkflow.mutate(workflow.id);
+    }
+  };
+
+  const handleRun = () => {
+    executeWorkflow.mutate(
+      { id: workflow.id },
+      {
+        onSuccess: (response) => {
+          navigate(`/workflows/${workflow.id}?execution=${response.data.id}`);
+        },
+      }
+    );
+  };
+
+  const isUpdating = updateWorkflow.isPending;
+  const isRunning = executeWorkflow.isPending;
 
   return (
     <div className="relative bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
@@ -65,10 +105,22 @@ export default function WorkflowCard({ workflow }: WorkflowCardProps) {
                 >
                   Edit
                 </Link>
-                <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                <button
+                  onClick={handleToggleStatus}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                >
+                  {workflow.status === 'active' ? 'Set to Draft' : 'Activate'}
+                </button>
+                <button
+                  onClick={handleDuplicate}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                >
                   Duplicate
                 </button>
-                <button className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600">
+                <button
+                  onClick={handleDelete}
+                  className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+                >
                   Delete
                 </button>
               </div>
@@ -84,14 +136,21 @@ export default function WorkflowCard({ workflow }: WorkflowCardProps) {
 
       {/* Status badge */}
       <div className="flex items-center gap-2 mb-4">
-        <span
-          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+        <button
+          onClick={handleToggleStatus}
+          disabled={isUpdating}
+          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
             statusColors[workflow.status]
-          }`}
+          } ${isUpdating ? 'opacity-50' : ''}`}
+          title={`Click to ${workflow.status === 'active' ? 'deactivate' : 'activate'}`}
         >
-          {statusIcons[workflow.status]}
+          {isUpdating ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            statusIcons[workflow.status]
+          )}
           {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
-        </span>
+        </button>
         <span className="text-xs text-gray-400">
           {workflow.node_count} nodes
         </span>
@@ -105,21 +164,18 @@ export default function WorkflowCard({ workflow }: WorkflowCardProps) {
         </div>
 
         <div className="flex items-center gap-1">
-          {workflow.status === 'active' ? (
-            <button
-              className="p-1.5 text-gray-400 hover:text-yellow-500 rounded transition-colors"
-              title="Pause"
-            >
-              <Pause className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              className="p-1.5 text-gray-400 hover:text-green-500 rounded transition-colors"
-              title="Run"
-            >
+          <button
+            onClick={handleRun}
+            disabled={isRunning}
+            className="p-1.5 text-gray-400 hover:text-green-500 rounded transition-colors disabled:opacity-50"
+            title="Run workflow"
+          >
+            {isRunning ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
               <Play className="w-4 h-4" />
-            </button>
-          )}
+            )}
+          </button>
           <Link
             to={`/workflows/${workflow.id}`}
             className="p-1.5 text-gray-400 hover:text-primary-500 rounded transition-colors"

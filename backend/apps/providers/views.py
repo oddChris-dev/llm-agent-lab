@@ -8,6 +8,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.db import models
 
 from .models import Provider, ProviderType
@@ -190,3 +191,152 @@ class ProviderViewSet(viewsets.ModelViewSet):
                 return provider.list_models()
 
         return []
+
+    @action(detail=True, methods=['get'])
+    def voices(self, request, pk=None):
+        """
+        List available voices for a TTS provider.
+        """
+        provider = self.get_object()
+        config = provider.config or {}
+
+        if provider.type != ProviderType.TTS:
+            return Response(
+                {'error': 'Voices are only available for TTS providers'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            voices = self._get_tts_voices(config)
+            return Response({
+                'voices': [
+                    {
+                        'id': v.id,
+                        'name': v.name,
+                        'language': v.language,
+                        'description': getattr(v, 'description', None),
+                        'is_cloned': getattr(v, 'is_cloned', False),
+                    }
+                    for v in voices
+                ]
+            })
+        except Exception as e:
+            logger.exception(f"Failed to get voices: {e}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def clone_voice(self, request, pk=None):
+        """
+        Clone a voice from an audio sample.
+        """
+        provider = self.get_object()
+        config = provider.config or {}
+
+        if provider.type != ProviderType.TTS:
+            return Response(
+                {'error': 'Voice cloning is only available for TTS providers'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get parameters
+        name = request.data.get('name')
+        audio_file = request.FILES.get('audio')
+        description = request.data.get('description', '')
+
+        if not name:
+            return Response(
+                {'error': 'Voice name is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not audio_file:
+            return Response(
+                {'error': 'Audio sample file is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Read audio data
+            audio_data = audio_file.read()
+
+            # Clone voice
+            voice_info = self._clone_voice(config, name, audio_data, description)
+
+            return Response({
+                'id': voice_info.id,
+                'name': voice_info.name,
+                'language': voice_info.language,
+                'description': getattr(voice_info, 'description', None),
+                'is_cloned': True,
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.exception(f"Failed to clone voice: {e}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=True, methods=['delete'], url_path='voices/(?P<voice_id>[^/.]+)')
+    def delete_voice(self, request, pk=None, voice_id=None):
+        """
+        Delete a cloned voice.
+        """
+        provider = self.get_object()
+        config = provider.config or {}
+
+        if provider.type != ProviderType.TTS:
+            return Response(
+                {'error': 'Voice deletion is only available for TTS providers'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            success = self._delete_voice(config, voice_id)
+            if success:
+                return Response({'status': 'deleted'})
+            return Response(
+                {'error': f'Voice {voice_id} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            logger.exception(f"Failed to delete voice: {e}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def _get_tts_voices(self, config: dict):
+        """Get available voices from TTS provider."""
+        tts_type = config.get('type', 'xtts')
+
+        if tts_type == 'xtts':
+            from .tts.xtts import XTTSProvider
+            provider = XTTSProvider(config)
+            return provider.list_voices()
+
+        return []
+
+    def _clone_voice(self, config: dict, name: str, audio_data: bytes, description: str = None):
+        """Clone a voice using the TTS provider."""
+        tts_type = config.get('type', 'xtts')
+
+        if tts_type == 'xtts':
+            from .tts.xtts import XTTSProvider
+            provider = XTTSProvider(config)
+            return provider.clone_voice(name, audio_data, description)
+
+        raise ValueError(f'Voice cloning not supported for TTS type: {tts_type}')
+
+    def _delete_voice(self, config: dict, voice_id: str) -> bool:
+        """Delete a cloned voice."""
+        tts_type = config.get('type', 'xtts')
+
+        if tts_type == 'xtts':
+            from .tts.xtts import XTTSProvider
+            provider = XTTSProvider(config)
+            return provider.delete_voice(voice_id)
+
+        return False

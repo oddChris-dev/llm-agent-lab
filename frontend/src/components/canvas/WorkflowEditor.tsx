@@ -14,11 +14,12 @@ import ReactFlow, {
   Panel,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Save, Play, ArrowLeft, Plus } from 'lucide-react';
+import { Save, Play, ArrowLeft, Plus, Loader2 } from 'lucide-react';
 import CustomNode from './CustomNode';
 import NodeLibrary from './NodeLibrary';
 import NodeConfigPanel from '../panels/NodeConfigPanel';
-import { useWorkflow, useUpdateWorkflow } from '../../hooks/useWorkflows';
+import ExecutionMonitor from '../execution/ExecutionMonitor';
+import { useWorkflow, useUpdateWorkflow, useExecuteWorkflow } from '../../hooks/useWorkflows';
 
 // Register custom node types
 const nodeTypes = {
@@ -32,11 +33,14 @@ export default function WorkflowEditor() {
 
   const { data: workflow, isLoading } = useWorkflow(isNew ? null : id!);
   const updateWorkflow = useUpdateWorkflow();
+  const executeWorkflow = useExecuteWorkflow();
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [executionId, setExecutionId] = useState<string | null>(null);
+  const [showExecutionMonitor, setShowExecutionMonitor] = useState(false);
 
   // Load workflow data into React Flow state
   React.useEffect(() => {
@@ -105,7 +109,7 @@ export default function WorkflowEditor() {
       type: node.data.type,
       name: node.data.label,
       position: node.position,
-      config: node.data.config,
+      config: node.data.config || {},
     }));
 
     const connectionData = edges.map((edge) => ({
@@ -116,9 +120,40 @@ export default function WorkflowEditor() {
       target_port: edge.targetHandle || 'input',
     }));
 
-    // updateWorkflow.mutate({ id, nodes: nodeData, connections: connectionData });
-    console.log('Saving:', { nodes: nodeData, connections: connectionData });
-  }, [id, isNew, nodes, edges]);
+    updateWorkflow.mutate({ id, data: { nodes: nodeData, connections: connectionData } });
+  }, [id, isNew, nodes, edges, updateWorkflow]);
+
+  const handleRun = useCallback(async () => {
+    if (!id || isNew) return;
+
+    // Save first, then execute
+    const nodeData = nodes.map((node) => ({
+      id: node.id,
+      type: node.data.type,
+      name: node.data.label,
+      position: node.position,
+      config: node.data.config || {},
+    }));
+
+    const connectionData = edges.map((edge) => ({
+      id: edge.id,
+      source_node_id: edge.source,
+      source_port: edge.sourceHandle || 'output',
+      target_node_id: edge.target,
+      target_port: edge.targetHandle || 'input',
+    }));
+
+    // Save first
+    await updateWorkflow.mutateAsync({ id, data: { nodes: nodeData, connections: connectionData } });
+
+    // Then execute
+    executeWorkflow.mutate({ id }, {
+      onSuccess: (response) => {
+        setExecutionId(response.data.id);
+        setShowExecutionMonitor(true);
+      },
+    });
+  }, [id, isNew, nodes, edges, updateWorkflow, executeWorkflow]);
 
   if (isLoading && !isNew) {
     return (
@@ -159,14 +194,27 @@ export default function WorkflowEditor() {
           </button>
           <button
             onClick={handleSave}
-            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+            disabled={updateWorkflow.isPending || isNew}
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4" />
-            Save
+            {updateWorkflow.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {updateWorkflow.isPending ? 'Saving...' : 'Save'}
           </button>
-          <button className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600">
-            <Play className="w-4 h-4" />
-            Run
+          <button
+            onClick={handleRun}
+            disabled={executeWorkflow.isPending || isNew}
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {executeWorkflow.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Play className="w-4 h-4" />
+            )}
+            {executeWorkflow.isPending ? 'Starting...' : 'Run'}
           </button>
         </div>
       </div>
@@ -230,6 +278,17 @@ export default function WorkflowEditor() {
               setNodes((nds) =>
                 nds.map((n) => (n.id === selectedNode.id ? { ...n, data } : n))
               );
+            }}
+          />
+        )}
+
+        {/* Execution Monitor */}
+        {showExecutionMonitor && executionId && (
+          <ExecutionMonitor
+            executionId={executionId}
+            onClose={() => {
+              setShowExecutionMonitor(false);
+              setExecutionId(null);
             }}
           />
         )}

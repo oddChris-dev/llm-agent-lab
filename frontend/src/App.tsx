@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkflowEditor from './components/canvas/WorkflowEditor';
 import Settings from './components/settings/Settings';
+import AssetsPage from './components/assets/AssetsPage';
 import Layout from './components/layout/Layout';
 import { LoginPage, RegisterPage, ProtectedRoute } from './components/auth';
 
@@ -40,6 +41,16 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Settings />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assets"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AssetsPage />
             </Layout>
           </ProtectedRoute>
         }
