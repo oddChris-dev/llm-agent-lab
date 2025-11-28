@@ -14,6 +14,9 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
+# Dashboard stats view
+from apps.workflows.views import DashboardStatsView
+
 # API v1 URL patterns
 api_v1_patterns = [
     path('workflows/', include('apps.workflows.urls')),
@@ -22,6 +25,7 @@ api_v1_patterns = [
     path('executions/', include('apps.executions.urls')),
     path('assets/', include('apps.assets.urls')),
     path('node-types/', include('apps.nodes.urls')),
+    path('dashboard/stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
 ]
 
 urlpatterns = [

@@ -223,3 +223,7 @@ class Connection(BaseModel):
 
     def __str__(self):
         return f"{self.source_node.name}:{self.source_port} -> {self.target_node.name}:{self.target_port}"
+
+
+# Import legacy models so they're included in migrations
+from .models_legacy import Agent, GameTemplate, GamePlayer, WebPage, Transcript

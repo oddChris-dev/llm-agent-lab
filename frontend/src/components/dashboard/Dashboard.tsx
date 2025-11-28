@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Play, Pause, Settings, MoreVertical } from 'lucide-react';
 import { useWorkflows } from '../../hooks/useWorkflows';
 import WorkflowCard from './WorkflowCard';
 import QuickStats from './QuickStats';
+import CreateWorkflowModal from '../workflows/CreateWorkflowModal';
 
 export default function Dashboard() {
   const { data: workflows, isLoading, error } = useWorkflows();
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   if (error) {
     return (
@@ -28,13 +30,13 @@ export default function Dashboard() {
             Manage your AI agent workflows
           </p>
         </div>
-        <Link
-          to="/workflows/new"
+        <button
+          onClick={() => setShowCreateModal(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
         >
           <Plus className="w-5 h-5" />
           New Workflow
-        </Link>
+        </button>
       </div>
 
       {/* Quick Stats */}
@@ -60,13 +62,13 @@ export default function Dashboard() {
             <p className="text-gray-500 dark:text-gray-400 mb-4">
               No workflows yet. Create your first one!
             </p>
-            <Link
-              to="/workflows/new"
+            <button
+              onClick={() => setShowCreateModal(true)}
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
             >
               <Plus className="w-5 h-5" />
               Create Workflow
-            </Link>
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -75,18 +77,23 @@ export default function Dashboard() {
             ))}
 
             {/* Add new card */}
-            <Link
-              to="/workflows/new"
+            <button
+              onClick={() => setShowCreateModal(true)}
               className="flex flex-col items-center justify-center h-48 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 transition-colors group"
             >
               <Plus className="w-8 h-8 text-gray-400 group-hover:text-primary-500 transition-colors" />
               <span className="mt-2 text-gray-500 group-hover:text-primary-500 transition-colors">
                 New Workflow
               </span>
-            </Link>
+            </button>
           </div>
         )}
       </div>
+
+      {/* Create Workflow Modal */}
+      {showCreateModal && (
+        <CreateWorkflowModal onClose={() => setShowCreateModal(false)} />
+      )}
     </div>
   );
 }

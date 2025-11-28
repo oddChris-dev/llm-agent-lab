@@ -1,0 +1,43 @@
+# Django Core
+Django>=5.0,<6.0
+djangorestframework>=3.14,<4.0
+django-cors-headers>=4.3,<5.0
+django-filter>=23.5,<24.0
+
+# Database
+psycopg2-binary>=2.9,<3.0
+
+# Authentication
+djangorestframework-simplejwt>=5.3,<6.0
+
+# Async & WebSockets
+channels>=4.0,<5.0
+channels-redis>=4.1,<5.0
+
+# Task Queue
+celery>=5.3,<6.0
+redis>=5.0,<6.0
+
+# API Documentation
+drf-spectacular>=0.27,<1.0
+
+# Utilities
+python-dotenv>=1.0,<2.0
+httpx>=0.25,<1.0
+
+# LLM Providers (optional - install as needed)
+# anthropic>=0.18,<1.0
+
+# TTS/STT (optional - install as needed)
+# TTS>=0.22,<1.0
+# vosk>=0.3,<1.0
+
+# Browser Automation (optional)
+# selenium>=4.15,<5.0
+# mitmproxy>=10.1,<11.0
+
+# Testing
+pytest>=7.4,<8.0
+pytest-django>=4.7,<5.0
+pytest-asyncio>=0.23,<1.0
+factory-boy>=3.3,<4.0
