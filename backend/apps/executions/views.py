@@ -92,7 +92,11 @@ class ExecutionViewSet(viewsets.ReadOnlyModelViewSet):
             )
         execution.status = ExecutionStatus.RUNNING
         execution.save()
-        # TODO: Trigger async resume task
+
+        # Trigger async resume task
+        from .tasks import resume_workflow
+        resume_workflow.delay(str(execution.id))
+
         return Response({'status': 'running'})
 
     @action(detail=True, methods=['post'])

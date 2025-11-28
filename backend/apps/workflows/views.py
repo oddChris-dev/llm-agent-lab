@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from django.db.models import Count
+from django.db import transaction
 
 from .models import Workflow, Node, Connection, WorkflowStatus
 from .serializers import (
@@ -86,9 +87,11 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         return WorkflowDetailSerializer
 
     @action(detail=True, methods=['post'])
+    @transaction.atomic
     def duplicate(self, request, pk=None):
         """
-        Create a copy of this workflow.
+        Create a copy of this workflow with all nodes and connections.
+        Uses database transaction to ensure atomicity.
         """
         workflow = self.get_object()
         serializer = WorkflowDuplicateSerializer(data=request.data)
@@ -127,9 +130,9 @@ class WorkflowViewSet(viewsets.ModelViewSet):
             trigger_data=request.data.get('trigger_data', {}),
         )
 
-        # TODO: Start async execution task
-        # from apps.executions.tasks import execute_workflow
-        # execute_workflow.delay(str(execution.id))
+        # Start async execution task
+        from apps.executions.tasks import execute_workflow
+        execute_workflow.delay(str(execution.id))
 
         return Response(
             ExecutionSerializer(execution).data,

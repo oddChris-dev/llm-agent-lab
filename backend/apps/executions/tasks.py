@@ -188,6 +188,76 @@ def execute_node(execution_id: str, node_id: str):
         return {'status': 'failed', 'error': str(e)}
 
 
+@shared_task(bind=True, max_retries=3)
+def resume_workflow(self, execution_id: str):
+    """
+    Resume a paused workflow execution.
+
+    Args:
+        execution_id: ID of the paused Execution record
+    """
+    from apps.executions.models import Execution, NodeExecution, ExecutionStatus
+
+    try:
+        execution = Execution.objects.select_related('workflow').get(id=execution_id)
+
+        if execution.status != ExecutionStatus.RUNNING:
+            logger.warning(f"Execution {execution_id} is not in running state")
+            return {'status': 'skipped', 'reason': 'not running'}
+
+        # Find the last completed node to resume from
+        last_completed = NodeExecution.objects.filter(
+            execution=execution,
+            status='completed'
+        ).order_by('-completed_at').first()
+
+        # Get next node(s) to execute
+        if last_completed:
+            from apps.workflows.models import Connection
+            next_connections = Connection.objects.filter(
+                workflow=execution.workflow,
+                source_node_id=last_completed.node_id
+            )
+            next_node_ids = [c.target_node_id for c in next_connections]
+        else:
+            # Start from trigger nodes
+            from apps.workflows.models import Node
+            trigger_nodes = Node.objects.filter(
+                workflow=execution.workflow,
+                type__startswith='trigger.'
+            )
+            next_node_ids = [str(n.id) for n in trigger_nodes]
+
+        if not next_node_ids:
+            # No more nodes, mark as completed
+            execution.status = ExecutionStatus.COMPLETED
+            execution.save()
+            _notify_execution_update(execution_id, {
+                'status': ExecutionStatus.COMPLETED,
+                'message': 'Execution resumed and completed'
+            })
+            return {'status': 'completed'}
+
+        # Continue execution from next nodes
+        for node_id in next_node_ids:
+            execute_node.delay(execution_id, node_id)
+
+        _notify_execution_update(execution_id, {
+            'status': ExecutionStatus.RUNNING,
+            'message': 'Execution resumed'
+        })
+
+        return {'status': 'resumed', 'nodes': next_node_ids}
+
+    except Exception as e:
+        logger.exception(f"Resume workflow failed: {e}")
+
+        if self.request.retries < self.max_retries:
+            raise self.retry(exc=e, countdown=2 ** self.request.retries)
+
+        return {'status': 'failed', 'error': str(e)}
+
+
 @shared_task
 def cleanup_stale_executions(timeout_hours: int = 24):
     """
