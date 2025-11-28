@@ -4,6 +4,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import WorkflowEditor from './components/canvas/WorkflowEditor';
 import Settings from './components/settings/Settings';
 import AssetsPage from './components/assets/AssetsPage';
+import ExecutionsPage from './components/executions/ExecutionsPage';
 import Layout from './components/layout/Layout';
 import { LoginPage, RegisterPage, ProtectedRoute } from './components/auth';
 
@@ -51,6 +52,16 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <AssetsPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/executions"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ExecutionsPage />
             </Layout>
           </ProtectedRoute>
         }

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Settings, Menu, X, FolderOpen } from 'lucide-react';
+import { Home, Settings, Menu, X, FolderOpen, PlayCircle } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,6 +12,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
+    { name: 'Executions', href: '/executions', icon: PlayCircle },
     { name: 'Assets', href: '/assets', icon: FolderOpen },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
