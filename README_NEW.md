@@ -22,7 +22,7 @@ A visual workflow orchestration platform for AI agents. Design, build, and execu
 - PostgreSQL 15+ (or use SQLite for development)
 - Redis (optional, for production)
 
-### Setup
+### Setup (Linux/macOS)
 
 ```bash
 # Clone the repository
@@ -36,7 +36,56 @@ cd llm-agent-lab
 ./scripts/dev.sh
 ```
 
-This starts:
+### Setup (Windows)
+
+**Option 1: PowerShell (Recommended for native Windows)**
+
+```powershell
+# Clone the repository
+git clone https://github.com/yourusername/llm-agent-lab.git
+cd llm-agent-lab
+
+# If you get execution policy errors, run this first:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Run setup script
+.\scripts\setup.ps1
+
+# Start development servers
+.\scripts\dev.ps1
+```
+
+**Option 2: WSL2 (Windows Subsystem for Linux)**
+
+If you prefer a Linux environment on Windows:
+
+```bash
+# Install WSL2 from PowerShell (admin):
+wsl --install
+
+# Open WSL and clone the repo
+wsl
+cd /mnt/c/path/to/your/projects
+git clone https://github.com/yourusername/llm-agent-lab.git
+cd llm-agent-lab
+
+# Use Linux scripts
+./scripts/setup.sh
+./scripts/dev.sh
+```
+
+**Option 3: Docker Desktop (Most Consistent)**
+
+```powershell
+# Install Docker Desktop for Windows
+# Then run:
+cd docker
+docker-compose up
+```
+
+### Development URLs
+
+Once running, these services are available:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000/api/v1/
 - API Docs: http://localhost:8000/api/docs/
@@ -92,9 +141,29 @@ llm-agent-lab/
 
 ### Backend
 
+**Linux/macOS:**
 ```bash
 cd backend
 source venv/bin/activate
+
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=apps
+
+# Format code
+black .
+isort .
+
+# Type checking
+mypy apps
+```
+
+**Windows (PowerShell):**
+```powershell
+cd backend
+.\venv\Scripts\Activate.ps1
 
 # Run tests
 pytest
@@ -129,7 +198,26 @@ npm run lint
 
 # Type check
 npm run type-check
+
+# Clean build artifacts (works on all platforms)
+npm run clean
 ```
+
+### Environment Configuration
+
+Copy the example environment file and customize it:
+
+**Linux/macOS:**
+```bash
+cp backend/.env.example backend/.env
+```
+
+**Windows:**
+```powershell
+copy backend\.env.example backend\.env
+```
+
+See `backend/.env.example` for all available configuration options.
 
 ## API Examples
 

@@ -6,6 +6,7 @@ Environment-specific settings are in development.py and production.py.
 """
 
 import os
+import tempfile
 from pathlib import Path
 from datetime import timedelta
 
@@ -222,7 +223,7 @@ AGENT_LAB = {
 
     # File storage
     'ASSET_STORAGE_PATH': os.environ.get('ASSET_STORAGE_PATH', str(MEDIA_ROOT / 'assets')),
-    'TEMP_AUDIO_PATH': os.environ.get('TEMP_AUDIO_PATH', '/tmp/agent_lab_audio'),
+    'TEMP_AUDIO_PATH': os.environ.get('TEMP_AUDIO_PATH', str(Path(tempfile.gettempdir()) / 'agent_lab_audio')),
 
     # External services (from legacy config.json)
     'OLLAMA_BASE_URL': os.environ.get('OLLAMA_BASE_URL', 'http://localhost:11434'),
